@@ -7,4 +7,4 @@ from .models import Book
 def book_list(request):
     # list of all book instances
     books = Book.objects.all()
-    return render(request, 'list_books.html', {'books': books})
+    return render(request, 'relationship_app/list_books.html', {'books': books})
