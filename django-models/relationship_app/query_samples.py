@@ -10,7 +10,7 @@ from .models import Author, Book, Library, Librarian
 author_name = "J.K Rowling"
 author = Author.objects.get(name=author_name)
 
-all_books_by_author = Book.author.all()
+all_books_by_author = Book.objects.filter(author=author)
 
 
 # List all books in a library.
