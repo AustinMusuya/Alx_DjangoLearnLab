@@ -12,7 +12,8 @@ class Author(models.Model):
 
 class Book(models.Model):
     title = models.CharField(max_length=100)
-    author = models.ForeignKey(Author, related_name='books')
+    author = models.ForeignKey(
+        Author, related_name='books', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -28,7 +29,8 @@ class Library(models.Model):
 
 class Librarian(models.Model):
     name = models.CharField(max_length=100)
-    library = models.OneToOneField(Library, related_name='librarians')
+    library = models.OneToOneField(
+        Library, related_name='librarians', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
