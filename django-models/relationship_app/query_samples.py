@@ -13,7 +13,9 @@ books_by_author = Book.objects.filter(author__name="J.K. Rowling")
 
 # List all books in a library.
 
-all_books_in_library = Library.books.all()
+library = Library.objects.get(name="National Library")
+
+all_books_in_library = library.books.all()
 
 # Retrieve the librarian for a library.
 
