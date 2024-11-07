@@ -15,7 +15,7 @@ class Book(models.Model):
     author = models.ForeignKey(Author, related_name='books')
 
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class Library(models.Model):
