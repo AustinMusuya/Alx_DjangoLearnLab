@@ -21,4 +21,4 @@ all_books_in_library = library.books.all()
 
 # Retrieve the librarian for a library.
 
-librarian = Librarian.objects.filter(library__name="National Library")
+librarian = Librarian.objects.get(library="National Library")
