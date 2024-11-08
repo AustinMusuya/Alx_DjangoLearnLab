@@ -10,9 +10,13 @@ class UserProfile(models.Model):
         ('Librarian', 'Librarian'),
         ('Member', 'Member'),
     ]
-    role = models.CharField(max_length=100)
+    role = models.CharField(
+        max_length=100, choices=ROLE_CHOICES, default='Member')
     user = models.OneToOneField(
         User, related_name='user_profile', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.role}"
 
 
 class Author(models.Model):
