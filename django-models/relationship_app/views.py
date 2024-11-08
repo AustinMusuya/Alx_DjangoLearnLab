@@ -2,12 +2,17 @@ from django.shortcuts import render
 from .models import Book
 from .models import Library
 from django.views.generic.detail import DetailView
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import login, authenticate
+from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 # Create your views here.
+
+# logic view for login
+
+# logic view for logout
 
 
 class SignUpView(CreateView):
