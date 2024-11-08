@@ -1,6 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
+
+
+class UserProfile(models.Model):
+    role = models.CharField(max_length=100)
+    user = models.OneToOneField(
+        User, related_name='user_profile', on_delete=models.CASCADE)
 
 
 class Author(models.Model):
