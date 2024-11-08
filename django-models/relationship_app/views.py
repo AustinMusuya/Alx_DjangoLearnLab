@@ -12,8 +12,8 @@ from django.contrib import messages
 
 # Create your views here.
 
-# logic for view register
 
+# logic for view register
 
 def register(request):
 

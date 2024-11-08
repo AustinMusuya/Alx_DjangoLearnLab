@@ -5,6 +5,11 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('Admin', 'Admin'),
+        ('Librarian', 'Librarian'),
+        ('Member', 'Member'),
+    ]
     role = models.CharField(max_length=100)
     user = models.OneToOneField(
         User, related_name='user_profile', on_delete=models.CASCADE)
