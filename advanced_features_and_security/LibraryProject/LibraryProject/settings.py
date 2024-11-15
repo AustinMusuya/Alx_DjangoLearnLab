@@ -125,10 +125,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Additional browser-side protections
+# Additional browser-side protections (Secure Headers to secure app from clickjacking and XSS)
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enforcing Secure Cookie Settings
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
@@ -140,5 +142,3 @@ SECURE_HSTS_PRELOAD = True
 
 
 # Enforcing Secure Cookie Settings
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
