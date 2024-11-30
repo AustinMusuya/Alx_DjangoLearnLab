@@ -32,7 +32,8 @@ class ListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly] # unauthenticated users can view
     # filter_backends = (filters.DjangoFilterBackend,)
     # filterset_class = BookFilter
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter,filters.OrderingFilter)
+    ordering_fields = ['title', 'publication_year']
     search_fields = ['title', 'author']
 
     # def get_queryset(self):
