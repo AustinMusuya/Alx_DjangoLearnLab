@@ -4,6 +4,9 @@ from rest_framework import status
 from django.test import TestCase
 from .models import Book, Author
 from django.urls import reverse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # factory = APIRequestFactory()
 
@@ -30,6 +33,13 @@ class BooksListViewTestCase(TestCase):
 
 class BooksDetailViewTestCase(APITestCase):
     def setUp(self):
+
+        # Create a user
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        
+        # Log in the user
+        self.client.login(username="testuser", password="testpassword")
+
         self.author = Author.objects.create(name='Test Author')
         self.book = Book.objects.create(title='Introduction to Java', publication_year="2024-05-05", author=self.author)
         self.valid_url = reverse('book-detail', kwargs={'pk': self.book.pk})
