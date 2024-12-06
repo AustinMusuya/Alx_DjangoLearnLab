@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from django.views.generic import TemplateView
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),
@@ -12,7 +12,7 @@ urlpatterns = [
     path('register/', views.Register.as_view(), name='register'),
     path('update/', views.user_update, name='update'),
     path('posts/', views.Home.as_view(), name='posts'),
-    path('logout/', views.Home.as_view(), name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     # path urls for CRUD actions on posts
     path('post/new/', views.PostCreateView.as_view(), name='post-create'),
     path('post/list-view/', views.PostListView.as_view(), name='post-list'),
