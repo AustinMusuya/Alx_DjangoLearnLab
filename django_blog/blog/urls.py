@@ -14,10 +14,10 @@ urlpatterns = [
     path('posts/', views.Home.as_view(), name='posts'),
     path('logout/', views.Home.as_view(), name='logout'),
     # path urls for CRUD actions on posts
-    path('post/new/', views.PostCreateView.as_view(), name='create-post'),
-    path('post/list-view/', views.PostListView.as_view(), name='list-post'),
-    path('post/<int:pk>/detail/', views.PostDetailView.as_view(), name='detail-post'),
-    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='update-post'),
-    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='delete-post'),
+    path('post/new/', views.PostCreateView.as_view(), name='post-create'),
+    path('post/list-view/', views.PostListView.as_view(), name='post-list'),
+    path('post/<int:pk>/detail/', views.PostDetailView.as_view(), name='post-detail'),
+    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
 
 ]
