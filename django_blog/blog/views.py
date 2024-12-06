@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from .models import Post
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from .forms import RegisterForm, UpdateForm
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.urls import reverse_lazy
 
 # Create your views here.
@@ -12,6 +13,25 @@ from django.urls import reverse_lazy
 class Home(TemplateView):
     template_name = 'blog/base.html'
 
+class ListBlog(ListView):
+    model = Post
+    context_object_name = 'posts'
+    
+
+class UpdateBlog(UpdateView):
+    model = Post
+    fields = ['title', 'content']
+
+class DeletBlog(DeleteView):
+    model = Post
+    success_url = reverse_lazy("/")
+
+class CreateBlog(CreateView):
+    model = Post
+    fields = ['title', 'content']
+
+class DetailBlog(DetailView):
+    pass
 class Register(CreateView):
     form_class = RegisterForm
     template_name = 'registration/register.html'
