@@ -3,7 +3,7 @@
 {% block content %}
 <section>
     <h2>{% if object %}Edit{% else %}Create{% endif %} Post</h2>
-    <form method="post">
+    <form method="post" action="{% url 'post-create' %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Submit</button>
