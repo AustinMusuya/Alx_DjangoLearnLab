@@ -16,28 +16,28 @@ class Home(TemplateView):
 class PostListView(ListView):
     model = Post
     context_object_name = 'posts'
-    template_name = 'blog/list-post.html'
+    template_name = 'blog/post_list.html'
     
 
 class PostUpdateView(UpdateView):
     model = Post
     fields = ['title', 'content']
-    template_name = 'blog/update-post.html'
+    template_name = 'blog/post_form.html'
 
 class PostDeleteView(DeleteView):
     model = Post
     success_url = reverse_lazy("/")
-    template_name = 'blog/delete-post.html'
+    template_name = 'blog/post_confrim_delete.html'
 
 class PostCreateView(CreateView):
     model = Post
     fields = ['title', 'content']
-    template_name = 'blog/create-post.html'
+    template_name = 'blog/post_form.html'
 
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'blog/detail-post.html'
+    template_name = 'blog/post_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
