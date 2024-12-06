@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
@@ -19,20 +20,35 @@ class PostListView(ListView):
     template_name = 'blog/post_list.html'
     
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['title', 'content']
     template_name = 'blog/post_form.html'
 
-class PostDeleteView(DeleteView):
+    def test_func(self):
+        # Allow only the author of the post to delete it
+        post = self.get_object()  # Get the current post instance
+        return self.request.user == post.author
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    success_url = reverse_lazy("/")
+    success_url = reverse_lazy("post_list")
     template_name = 'blog/post_confrim_delete.html'
 
-class PostCreateView(CreateView):
+    def test_func(self):
+        # Allow only the author of the post to delete it
+        post = self.get_object()  # Get the current post instance
+        return self.request.user == post.author
+
+class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
     fields = ['title', 'content']
     template_name = 'blog/post_form.html'
+
+    def test_func(self):
+        # Allow only the author of the post to delete it
+        post = self.get_object()  # Get the current post instance
+        return self.request.user == post.author
 
 
 class PostDetailView(DetailView):
@@ -49,6 +65,9 @@ class Register(CreateView):
     template_name = 'registration/register.html'
     success_url = reverse_lazy('login')
 
+
+    # Redundant Code 
+
 @login_required(login_url='/login')
 def create_post(request):
     if request.method == 'POST':
@@ -60,7 +79,7 @@ def create_post(request):
             return redirect('/')
     else:
         form = PostForm()
-        return render(request, 'blog/create-post.html', {'form': form})
+        return render(request, 'blog/post_form.html', {'form': form})
 
 @login_required(login_url='/login')
 def user_update(request):
