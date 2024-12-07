@@ -16,4 +16,7 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+
+class Tag(models.Model):
+    name = models.ManyToManyField(Post, verbose_name='list of post_tags')
     
