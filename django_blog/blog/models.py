@@ -25,4 +25,7 @@ class Comment(models.Model):
 
 class Tag(models.Model):
     name = models.ManyToManyField(Post, verbose_name='list of post_tags')
+
+    def __str__(self):
+        return self.name
     
