@@ -13,11 +13,19 @@ urlpatterns = [
     path('update/', views.user_update, name='update'),
     path('posts/', views.Home.as_view(), name='posts'),
     path('logout/', LogoutView.as_view(), name='logout'),
+
     # path urls for CRUD actions on posts
     path('post/new/', views.PostCreateView.as_view(), name='post-create'),
     path('post/list-view/', views.PostListView.as_view(), name='post-list'),
     path('post/<int:pk>/detail/', views.PostDetailView.as_view(), name='post-detail'),
     path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
+
+    # path urls for CRUD actions on comments
+    path('posts/<int:post_id>/comments/new/', views.CommentCreateView.as_view(), name='comment-create'),
+    path('post/comment-list-view/', views.CommentListView.as_view(), name='comment-list'),
+    # path('post/<int:pk>/detail/', views.CommentDetailView.as_view(), name='post-detail'),
+    # path('post/<int:pk>/update/', views.CommentUpdateView.as_view(), name='post-update'),
+    # path('post/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='post-delete'),
 
 ]
