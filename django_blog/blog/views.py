@@ -98,6 +98,27 @@ class CommentListView(ListView):
     template_name = 'blog/post_comments.html'
 
 
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    fields = ['content']
+    template_name = 'blog/comment_form.html'
+
+    def test_func(self):
+        # Allow only the author of the comment to delete it
+        comment = self.get_object()  # Get the current comment instance
+        return self.request.user == comment.author
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    success_url = reverse_lazy("post_list")
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def test_func(self):
+        # Allow only the author of the comment to delete it
+        comment = self.get_object()  # Get the current comment instance
+        return self.request.user == comment.author
+
+
 
     # Redundant Code 
 
