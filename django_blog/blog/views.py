@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post
+from .models import Post, Comment
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from .forms import RegisterForm, UpdateForm, PostForm
@@ -14,6 +14,14 @@ from django.urls import reverse_lazy
 class Home(TemplateView):
     template_name = 'blog/base.html'
 
+# User Sign Up/Register view 
+class Register(CreateView):
+    form_class = RegisterForm
+    template_name = 'registration/register.html'
+    success_url = reverse_lazy('login')    
+
+
+# CRUD Views opertions on POSTS by users
 class PostListView(ListView):
     model = Post
     context_object_name = 'posts'
@@ -67,11 +75,28 @@ class PostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         return context
     
+# CRUD Operation Views on Comments
 
-class Register(CreateView):
-    form_class = RegisterForm
-    template_name = 'registration/register.html'
-    success_url = reverse_lazy('login')
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['post','content']
+    template_name = 'blog/comment_form.html'
+
+    def form_valid(self, form):
+        # Set the author to the currently logged-in user
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        # Redirect to the list view after successful creation
+        return reverse_lazy('comment-list')
+    
+
+class CommentListView(ListView):
+    model = Comment
+    context_object_name = 'comments'
+    template_name = 'blog/post_comments.html'
+
 
 
     # Redundant Code 
