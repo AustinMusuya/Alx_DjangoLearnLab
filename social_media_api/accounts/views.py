@@ -4,6 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import RegisterForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from rest_framework import serializers, viewsets
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer
+
+User = get_user_model()
 
 # Create your views here.
 
@@ -20,3 +25,7 @@ class RegistrationView(CreateView):
 
 class ProfileView(TemplateView, LoginRequiredMixin):
     template_name = 'accounts/profile.html'
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
