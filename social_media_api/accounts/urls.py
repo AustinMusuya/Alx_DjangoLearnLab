@@ -17,6 +17,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('api-token-auth/', ObtainAuthToken.as_view(), name='api-token-auth'),
+    path('follow/<int:user_id>/', views.FollowUser.as_view(), name='follow-user'),
+    path('unfollow/<int:user_id>/', views.UnfollowUser.as_view(), name='unfollow-user'),
 
     # viewset for router urls
     path('api/', include(router.urls))
