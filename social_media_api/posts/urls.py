@@ -7,5 +7,5 @@ routers.register('post-view',views.PostViewSet )
 routers.register('comment-view',views.CommentViewSet )
 
 urlpatterns = [
-     path('api/', include(routers.urls)),
+     path('', include(routers.urls)),
 ]
