@@ -113,7 +113,7 @@ class FollowUser(generics.GenericAPIView):
 
     def post(self, request, user_id):
         try:
-            user_to_follow = User.objects.get(id=user_id)
+            user_to_follow = CustomUser.objects.get(id=user_id)
             if request.user != user_to_follow:
                 request.user.following.add(user_to_follow)
                 return Response({'message': 'User followed successfully!'}, status=status.HTTP_200_OK)
