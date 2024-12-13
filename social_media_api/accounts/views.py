@@ -4,12 +4,13 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import RegisterForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import serializers, viewsets, views
 from django.contrib.auth import get_user_model, authenticate
-from .serializers import UserSerializer
+from .serializers import UserSerializer, LoginSerializer
 
 User = get_user_model()
 
@@ -41,6 +42,15 @@ class RegistrationAPIView(views.APIView):
         )
 
     def post(self, request):
+        # Check if user already exists
+        if User.objects.filter(username=request.data.get('username')).exists():
+            return Response({"message": "A user with that username already exists."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(email=request.data.get('email')).exists():
+            return Response({"message": "A user with that email already exists."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -60,32 +70,35 @@ class RegistrationAPIView(views.APIView):
 
 
 class LoginAPIView(views.APIView):
+    serializer_class = LoginSerializer
+
+    def get(self, request):
+        return Response(
+            {
+                "message": "Use POST request and enter username and password to login user"
+            },
+            status=status.HTTP_200_OK
+        )
+
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = authenticate(
+                username=serializer.validated_data['username'],
+                password=serializer.validated_data['password']
+                )
 
-        if not username or password:
-            return Response(
-                {'error': "username or password are required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        user = authenticate(username=username, password=password)
+            if user:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response(
+                    {
+                        'message': 'Login succesful.',
+                        'token': token.key
+                    },
+                    status=status.HTTP_200_OK
+                )
 
-        if user:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response(
-                {
-                    'message': 'Login succesful.',
-                    'token': token.key,
-                    "new_token": created
-                },
-                status=status.HTTP_200_OK
-            )
-        else:
-            return Response(
-                {"error": "Invalid username or password."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+        return Response({'Message': 'Invalid Username and Password'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ProfileView(TemplateView, LoginRequiredMixin):
