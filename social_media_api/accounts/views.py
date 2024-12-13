@@ -6,13 +6,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import serializers, viewsets, views
 from django.contrib.auth import get_user_model, authenticate
 from .serializers import UserSerializer, LoginSerializer
+from .models import CustomUser
 
 User = get_user_model()
 
@@ -108,7 +109,7 @@ class ProfileView(TemplateView, LoginRequiredMixin):
 
 
 class FollowUser(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
         try:
@@ -122,11 +123,11 @@ class FollowUser(generics.GenericAPIView):
 
         
 class UnfollowUser(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
         try:
-            user_to_unfollow = User.objects.get(id=user_id)
+            user_to_unfollow = CustomUser.objects.get(id=user_id)
             if request.user != user_to_unfollow:
                 request.user.following.remove(user_to_unfollow)
                 return Response({'message': 'User unfollowed successfully!'}, status=status.HTTP_200_OK)
