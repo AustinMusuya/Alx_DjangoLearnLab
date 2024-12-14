@@ -6,23 +6,34 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    token = serializers.CharField()
+    followers_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'token']
+        fields = '__all__'
+
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    # token = serializers.CharField()
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
         }
 
     def create(self, validated_data):
         user = get_user_model().objects.create_user(**validated_data)
-        token, created = Token.objects.create(user=user)
-        user.token = token.key
         return user
 
 
 class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
     class Meta:
         model = User
-        fields = ("username", "password")
+        fields = ['username', 'password']
