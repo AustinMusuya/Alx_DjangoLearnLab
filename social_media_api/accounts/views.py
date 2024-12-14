@@ -10,9 +10,10 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import serializers, viewsets, views
 from django.contrib.auth import get_user_model, authenticate
-from .serializers import UserSerializer, LoginSerializer
+from .serializers import UserSerializer, LoginSerializer, RegisterSerializer
 from .models import CustomUser
 
 User = get_user_model()
@@ -26,6 +27,11 @@ class HomeView(TemplateView):
     template_name = 'accounts/home.html'
 
 
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+
+
 class RegistrationView(CreateView):
     form_class = RegisterForm
     template_name = 'registration/register.html'
@@ -33,8 +39,8 @@ class RegistrationView(CreateView):
 
 
 class RegistrationAPIView(views.APIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
+    serializer_class = RegisterSerializer
 
     def get(self, request):
         return Response(
@@ -53,26 +59,31 @@ class RegistrationAPIView(views.APIView):
         if User.objects.filter(email=request.data.get('email')).exists():
             return Response({"message": "A user with that email already exists."},
                             status=status.HTTP_400_BAD_REQUEST)
-        
-        serializer = UserSerializer(data=request.data)
+
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+
+            # Generate token for the new user
+            token, created = Token.objects.get_or_create(user=user)
+            # user.token = token.key
             return Response(
                 {
                     'message': "new user created successfully",
-                    "user": {
-                        "id": user.id,
-                        "username": user.username,
-                        "email": user.email,
-                        "token": user.token
-                    }
+                    "token": token.key
+                    # "user": {
+                    #     "id": user.id,
+                    #     "username": user.username,
+                    #     "email": user.email,
+                    #     "token": user.token
+                    # }
                 },
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginAPIView(views.APIView):
+class LoginAPIView(ObtainAuthToken):
     serializer_class = LoginSerializer
 
     def get(self, request):
@@ -89,7 +100,7 @@ class LoginAPIView(views.APIView):
             user = authenticate(
                 username=serializer.validated_data['username'],
                 password=serializer.validated_data['password']
-                )
+            )
 
             if user:
                 token, created = Token.objects.get_or_create(user=user)
@@ -121,7 +132,7 @@ class FollowUser(generics.GenericAPIView):
         except User.DoesNotExist:
             return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        
+
 class UnfollowUser(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -134,7 +145,3 @@ class UnfollowUser(views.APIView):
             return Response({'error': 'You cannot unfollow yourself.'}, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
             return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
