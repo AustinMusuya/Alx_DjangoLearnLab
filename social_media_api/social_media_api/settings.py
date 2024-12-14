@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'accounts.apps.AccountsConfig',
     'posts.apps.PostsConfig',
+    'notifications.apps.NotificationsConfig',
     'rest_framework',
     'rest_framework.authtoken',
 ]

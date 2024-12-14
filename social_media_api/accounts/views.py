@@ -121,10 +121,12 @@ class ProfileView(TemplateView, LoginRequiredMixin):
 
 class FollowUser(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def post(self, request, user_id):
         try:
             user_to_follow = CustomUser.objects.get(id=user_id)
+            # check that user making request cannot follow themselves
             if request.user != user_to_follow:
                 request.user.following.add(user_to_follow)
                 return Response({'message': 'User followed successfully!'}, status=status.HTTP_200_OK)

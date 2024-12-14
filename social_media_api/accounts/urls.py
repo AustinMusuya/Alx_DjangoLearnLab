@@ -16,7 +16,7 @@ urlpatterns = [
     path('register/', views.RegistrationView.as_view(), name='register'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
 
-    # API views to endpoints
+    # Endpoint to API Views
     path('api-register/', views.RegistrationAPIView.as_view(), name='api-register'),
     path('api-login/', views.LoginAPIView.as_view(), name='api-login'),
     path('api-token-auth/', ObtainAuthToken.as_view(), name='api-token-auth'),
